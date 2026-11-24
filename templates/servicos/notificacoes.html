@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block titulo %}Notificações{% endblock %}
+{% block conteudo %}
+<h1>🔔 Notificações</h1>
+<ul>{% for n in lista %}<li>{% if n.url %}<a href="{{ n.url }}">{{ n.texto }}</a>{% else %}{{ n.texto }}{% endif %} <small>({{ n.criado_em|date:"d/m H:i" }})</small></li>
+{% empty %}<li>Nenhuma notificação.</li>{% endfor %}</ul>
+{% endblock %}

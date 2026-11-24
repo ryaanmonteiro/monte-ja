@@ -1,0 +1,4 @@
+Django>=5.0,<5.3
+# Opcional (somente se usar PostgreSQL ou MySQL):
+# psycopg2-binary>=2.9
+# mysqlclient>=2.2

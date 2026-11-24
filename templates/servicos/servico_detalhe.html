@@ -1,0 +1,16 @@
+{% extends "base.html" %}{% load estrelas %}
+{% block titulo %}{{ servico.titulo }}{% endblock %}
+{% block conteudo %}
+<div class="caixa larga">
+  <h1>{{ servico.icone }} {{ servico.titulo }}</h1>
+  <p><span class="status">{{ servico.get_categoria_display }}</span> · 📍 {{ servico.regiao }}</p>
+  <p>{{ servico.descricao|linebreaksbr }}</p>
+  <p><strong>A partir de R$ {{ servico.preco_base|floatformat:2 }}</strong></p>
+  <p>Montador: <a href="{% url 'contas:perfil_montador' montador.pk %}">{{ montador.nome_completo }}</a>
+    <span class="estrelas">{{ montador.nota_arredondada|estrelas }}</span> ({{ montador.total_avaliacoes }} avaliações)</p>
+  <a class="btn" href="{% url 'contas:perfil_montador' montador.pk %}">Ver perfil do montador</a>
+  {% if not user.is_authenticated or not user.eh_montador %}
+    <a class="btn-sec btn" href="{% url 'servicos:contratar' montador.pk %}?servico={{ servico.pk }}">Contratar agora</a>
+  {% endif %}
+</div>
+{% endblock %}

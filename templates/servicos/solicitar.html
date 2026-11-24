@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block titulo %}{% if montador %}Contratar{% else %}Pedir montagem{% endif %}{% endblock %}
+{% block conteudo %}
+<div class="caixa larga">
+  <h1>{% if montador %}Contratar {{ montador.nome_completo }}{% else %}Solicitar montagem{% endif %}</h1>
+  <p>{% if montador %}O montador receberá o pedido e poderá aceitá-lo ou recusá-lo.{% else %}Seu pedido ficará visível para os montadores da sua região.{% endif %}</p>
+  <form method="post">{% csrf_token %}{{ form.as_p }}<button class="btn" type="submit">Enviar pedido</button></form>
+</div>
+{% endblock %}

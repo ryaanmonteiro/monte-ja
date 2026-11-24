@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block titulo %}Chat{% endblock %}
+{% block conteudo %}
+<h1>💬 Conversas</h1>
+<ul>{% for c in contatos %}<li><a href="{% url 'servicos:conversa' c.pk %}">{{ c.nome_completo }}</a> ({{ c.get_tipo_display }})</li>
+{% empty %}<li>Nenhuma conversa ainda. Abra o perfil de um montador e clique em “Enviar Mensagem”.</li>{% endfor %}</ul>
+{% endblock %}

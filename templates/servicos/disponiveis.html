@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block titulo %}Solicitações disponíveis{% endblock %}
+{% block conteudo %}
+<h1>Solicitações disponíveis</h1>
+<p>Você tem <strong>🪙 {{ user.moedas }} moedas</strong>. Liberar o contato de um cliente custa {{ custo }} moeda(s).
+  <form class="inline" method="post" action="{% url 'contas:comprar_moedas' %}">{% csrf_token %}<input type="hidden" name="next" value="{% url 'servicos:disponiveis' %}"><button class="btn-sec btn" type="submit">Adicionar moedas (simulado)</button></form></p>
+<p>{% if todas %}<a href="{% url 'servicos:disponiveis' %}">Ver só a minha região</a>{% else %}<a href="?todas=1">Ver todas as regiões</a>{% endif %}</p>
+<table class="tab">
+<tr><th>Móvel</th><th>Região</th><th>Quando</th><th>Contato do cliente</th><th>Ação</th></tr>
+{% for s in solicitacoes %}
+<tr>
+  <td>{{ s.tipo_movel }}<br><small>{{ s.observacoes|truncatechars:80 }}</small></td>
+  <td>{{ s.cidade }}</td>
+  <td>{{ s.data|date:"d/m/Y" }} {{ s.horario|time:"H:i" }}</td>
+  {% if s.pk in liberadas %}
+    <td>{{ s.cliente.nome_completo }}<br>{{ s.cliente.telefone }}<br><small>{{ s.endereco }}</small></td>
+    <td><form class="inline" method="post" action="{% url 'servicos:aceitar' s.pk %}">{% csrf_token %}<button class="btn" type="submit">Aceitar serviço</button></form></td>
+  {% else %}
+    <td><em>🔒 Oculto</em></td>
+    <td><form class="inline" method="post" action="{% url 'servicos:desbloquear' s.pk %}">{% csrf_token %}<button class="btn" type="submit">Liberar contato ({{ custo }} 🪙)</button></form></td>
+  {% endif %}
+</tr>
+{% empty %}
+<tr><td colspan="5">Nenhuma solicitação aberta no momento.</td></tr>
+{% endfor %}
+</table>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block titulo %}Início{% endblock %}
+{% block conteudo %}
+<form class="busca" method="get" action="{% url 'home' %}">
+  <input type="text" name="q" value="{{ q }}" placeholder="Busque por móvel, serviço ou montador (ex.: guarda-roupa)">
+  <input type="hidden" name="regiao" value="{{ regiao }}">
+  <button type="submit" aria-label="Pesquisar">🔍</button>
+</form>
+<div style="text-align:center">Região: <strong>{{ regiao }}</strong> ·
+  <form class="inline" method="get" action="{% url 'home' %}">
+    <input type="hidden" name="q" value="{{ q }}">
+    <input type="text" name="regiao" value="{{ regiao }}" style="width:170px;padding:4px 10px" aria-label="Alterar região">
+    <button class="btn-link" type="submit">alterar</button>
+  </form></div>
+
+<h2 class="secao">Últimos serviços adicionados</h2>
+{% include "servicos/_cards.html" with itens=ultimos %}
+
+<h2 class="secao">Baseados em sua região ({{ regiao }})</h2>
+{% include "servicos/_cards.html" with itens=da_regiao %}
+
+{% for nome, itens in categorias %}
+  <h2 class="secao">{{ nome }}</h2>
+  {% include "servicos/_cards.html" %}
+{% endfor %}
+{% endblock %}

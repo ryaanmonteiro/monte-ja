@@ -1,0 +1,19 @@
+{% extends "base.html" %}{% load estrelas %}
+{% block titulo %}Avaliações de {{ montador.nome_completo }}{% endblock %}
+{% block conteudo %}
+<div class="caixa larga">
+  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+    <h1>👍 Avaliações</h1>
+    {% if pendente %}<a class="btn" href="{% url 'servicos:avaliar' pendente.pk %}">Avaliar</a>{% endif %}
+  </div>
+  <p><a href="{% url 'contas:perfil_montador' montador.pk %}"><strong>{{ montador.nome_completo }}</strong></a>
+     <span class="estrelas">{{ montador.nota_arredondada|estrelas }}</span> {{ montador.nota_media }} ({{ montador.total_avaliacoes }})</p>
+  <ul class="lista-aval">
+  {% for a in lista %}
+    <li><span class="av">🙂</span><div><strong>{{ a.cliente.nome_completo }}</strong> <span class="estrelas" style="font-size:1rem">{{ a.nota|estrelas }}</span><br>{{ a.comentario|default:"(sem comentário)" }}<br><small>{{ a.criado_em|date:"d/m/Y" }}</small></div></li>
+  {% empty %}
+    <li>Este montador ainda não recebeu avaliações.</li>
+  {% endfor %}
+  </ul>
+</div>
+{% endblock %}

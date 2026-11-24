@@ -1,0 +1,30 @@
+{% extends "base.html" %}{% load estrelas %}
+{% block titulo %}{{ montador.nome_completo }}{% endblock %}
+{% block conteudo %}
+<div class="caixa larga perfil">
+  <div class="avatar">👷</div>
+  <h1 style="font-size:2rem">{{ montador.nome_completo }}</h1>
+  <p><span class="estrelas">{{ montador.nota_arredondada|estrelas }}</span>
+     (<a href="{% url 'servicos:avaliacoes' montador.pk %}">{{ montador.total_avaliacoes }} avaliações</a>)</p>
+  <div class="bloco"><h3>👤 Sobre</h3><p>{{ montador.sobre|default:"Este montador ainda não preencheu a apresentação." }}
+    {% if montador.anos_experiencia %}<br><small>{{ montador.anos_experiencia }} ano(s) de experiência</small>{% endif %}</p></div>
+  <div class="bloco"><h3>💼 Serviços</h3>
+    {% if servicos %}<ul>{% for s in servicos %}<li><a href="{% url 'servicos:servico_detalhe' s.pk %}">{{ s.titulo }}</a> – a partir de R$ {{ s.preco_base|floatformat:2 }}</li>{% endfor %}</ul>
+    {% else %}<p>Nenhum serviço divulgado ainda.</p>{% endif %}</div>
+  <div class="bloco"><h3>📍 Área de atuação</h3><p>{{ montador.area_atuacao|default:montador.cidade }}</p></div>
+  {% if ultimas_avaliacoes %}<div class="bloco"><h3>Últimas avaliações</h3>
+    {% for a in ultimas_avaliacoes %}<p><span class="estrelas" style="font-size:1rem">{{ a.nota|estrelas }}</span> {{ a.comentario|truncatechars:90 }} – <small>{{ a.cliente.nome_completo }}</small></p>{% endfor %}</div>{% endif %}
+  {% if user.pk != montador.pk %}
+  <div class="acoes">
+    {% if user.is_authenticated %}
+      <a class="btn-sec btn" href="{% url 'servicos:conversa' montador.pk %}">Enviar Mensagem</a>
+    {% else %}
+      <a class="btn-sec btn" href="{% url 'contas:login' %}?next={{ request.path }}">Entrar para enviar mensagem</a>
+    {% endif %}
+    {% if not user.is_authenticated or not user.eh_montador %}
+      <a class="btn" href="{% url 'servicos:contratar' montador.pk %}">Contratar Agora</a>
+    {% endif %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

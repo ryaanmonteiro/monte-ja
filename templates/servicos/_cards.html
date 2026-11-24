@@ -1,0 +1,11 @@
+<div class="grade">
+{% for s in itens %}
+  <a class="card" href="{% url 'servicos:servico_detalhe' s.pk %}">
+    <span class="icone">{{ s.icone }}</span>
+    <strong>{{ s.titulo }}</strong>
+    <small>{{ s.montador.nome_completo }} · a partir de R$ {{ s.preco_base|floatformat:2 }}</small>
+  </a>
+{% empty %}
+  <p>Nenhum serviço encontrado.</p>
+{% endfor %}
+</div>

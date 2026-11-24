@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block titulo %}Meus pedidos{% endblock %}
+{% block conteudo %}
+<h1>Meus pedidos</h1>
+<table class="tab">
+<tr><th>#</th><th>Móvel</th><th>Quando</th><th>{% if user.eh_montador %}Cliente{% else %}Montador{% endif %}</th><th>Status</th><th>Ações</th></tr>
+{% for s in solicitacoes %}
+<tr>
+  <td>{{ s.pk }}</td>
+  <td>{{ s.tipo_movel }}<br><small>{{ s.cidade }}</small></td>
+  <td>{{ s.data|date:"d/m/Y" }} {{ s.horario|time:"H:i" }}</td>
+  <td>
+    {% if user.eh_montador %}
+      {{ s.cliente.nome_completo }}<br><small>{{ s.endereco }} · {{ s.cliente.telefone }}</small>
+      <br><a href="{% url 'servicos:conversa' s.cliente.pk %}">💬 Conversar</a>
+    {% elif s.montador %}
+      <a href="{% url 'contas:perfil_montador' s.montador.pk %}">{{ s.montador.nome_completo }}</a>
+      <br><a href="{% url 'servicos:conversa' s.montador.pk %}">💬 Conversar</a>
+    {% else %}—{% endif %}
+  </td>
+  <td><span class="status">{{ s.get_status_display }}</span></td>
+  <td>
+    {% if user.eh_montador %}
+      {% if s.status == 'pendente' %}
+        <form class="inline" method="post" action="{% url 'servicos:aceitar' s.pk %}">{% csrf_token %}<button class="btn" type="submit">Aceitar</button></form>
+        <form class="inline" method="post" action="{% url 'servicos:recusar' s.pk %}">{% csrf_token %}<button class="btn-sec btn" type="submit">Recusar</button></form>
+      {% elif s.status == 'aceita' %}
+        <form class="inline" method="post" action="{% url 'servicos:concluir' s.pk %}">{% csrf_token %}<button class="btn" type="submit">Concluir</button></form>
+      {% endif %}
+    {% elif s.pk in pendentes_avaliacao %}
+      <a class="btn" href="{% url 'servicos:avaliar' s.pk %}">Avaliar</a>
+    {% endif %}
+    {% if s.pode_cancelar %}
+      <form class="inline" method="post" action="{% url 'servicos:cancelar' s.pk %}" onsubmit="return confirm('Cancelar este pedido?')">{% csrf_token %}<button class="btn-link" type="submit">Cancelar</button></form>
+    {% endif %}
+  </td>
+</tr>
+{% empty %}
+<tr><td colspan="6">Você ainda não tem pedidos.</td></tr>
+{% endfor %}
+</table>
+{% endblock %}

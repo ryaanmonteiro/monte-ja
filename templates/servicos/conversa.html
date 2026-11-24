@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block titulo %}Chat com {{ outro.nome_completo }}{% endblock %}
+{% block conteudo %}
+<h1>💬 {{ outro.nome_completo }}</h1>
+<div class="chat">
+{% for m in mensagens %}
+  <div class="bolha {% if m.remetente_id == user.pk %}minha{% endif %}">{{ m.texto|linebreaksbr }}<small>{{ m.criado_em|date:"d/m H:i" }}</small></div>
+{% empty %}<p>Envie a primeira mensagem.</p>{% endfor %}
+</div>
+<form method="post" style="margin-top:12px">{% csrf_token %}
+  <p><textarea name="texto" rows="3" required placeholder="Digite sua mensagem"></textarea></p>
+  <button class="btn" type="submit">Enviar</button>
+</form>
+{% endblock %}
